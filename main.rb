@@ -1,7 +1,7 @@
 ## first player is x, second player is o. get the user input. columns are A, B, C, Rows are 1, 2, 3.
 ## The board should be a 2D array ??. The row/column should be a key, the player's input should be the value.
 ## players can't overwrite each others moves
-require 'rubocop'
+# require 'rubocop'
 
 ## defines the layout of the board
 class Board
@@ -28,17 +28,42 @@ class Board
     HEREDOC
   end
   
-  def check_if_win
+  def check_if_win?
     if 
+  end
 end
 
 # stores player data
-class Players
+class Player
   attr_reader :name, :symbol
 
   def initialize(name, symbol)
     @name = name
     @symbol = symbol
+  end
+end
+
+# defines the game rounds
+class Game
+
+  @@num_rounds = 0
+
+  def initialize(player1, player2, board)
+    @board = board
+    play_round(player1, player2) until board.check_if_win? || board.full?
+  end
+
+  def play_round(player1, player2)
+    if @@num_rounds.even?
+      @symbol = player1.symbol
+      @player_name = player1.name
+    else @symbol = player2.symbol; @player_name = player2.name
+    end
+    @board.view_board
+    puts "#{@player_name}, choose a number on the board to place your character."
+    @chosen_place = gets.chomp.to_i - 1
+    @board.cells[@chosen_place] = @symbol
+    @@num_rounds += 1
   end
 end
 
@@ -49,11 +74,16 @@ puts "What's the name of player 1?"
 player1_name = gets.chomp
 puts "Okay #{player1_name}, what's a single letter or character you would like to use for the board?"
 player1_char = gets.chomp
-player1 = Players.new(player1_name, player1_char)
+player1 = Player.new(player1_name, player1_char)
 puts "What's the name of player 2?"
 player2_name = gets.chomp
 puts "Okay #{player2_name}, what's a single letter or character you would like to use for the board?\nIt can't be '#{player1_char}'"
 player2_char = gets.chomp
-player2 = Players.new(player2_name, player2_char)
+player2 = Player.new(player2_name, player2_char)
+
+board = Board.new
+Game.new(player1, player2, board)
+
+
 
 
