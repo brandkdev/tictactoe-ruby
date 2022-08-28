@@ -1,7 +1,7 @@
 ## first player is x, second player is o. get the user input. columns are A, B, C, Rows are 1, 2, 3.
 ## The board should be a 2D array ??. The row/column should be a key, the player's input should be the value.
 ## players can't overwrite each others moves
-# require 'rubocop'
+require 'rubocop'
 
 ## defines the layout of the board
 class Board
@@ -27,9 +27,11 @@ class Board
 
     HEREDOC
   end
-  
-  def check_if_win?
-    if 
+
+  def check_if_win?(player)
+    WINNING_COMBOS.any? do |combo|
+      [cells[combo[0]], cells[combo[1]], cells[combo[2]]].uniq.length == 1
+    end
   end
 end
 
@@ -46,11 +48,12 @@ end
 # defines the game rounds
 class Game
 
-  @@num_rounds = 0
+  @@num_rounds = 0  
 
   def initialize(player1, player2, board)
     @board = board
-    play_round(player1, player2) until board.check_if_win? || board.full?
+    @player_name = 0
+    play_round(player1, player2) until board.check_if_win?(@player_name) || @@num_rounds == 9
   end
 
   def play_round(player1, player2)
